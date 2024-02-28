@@ -2,7 +2,7 @@
 
 import * as z from 'zod';
 import axios from 'axios';
-import { ChatCompletionRequestMessage } from 'openai';
+import { ChatCompletionMessageParam } from "openai/resources/chat";
 import { Heading } from '@/components/heading';
 import { MessageSquare } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,10 +17,14 @@ import { formSchema } from './constants';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Loader } from '@/components/loader';
+import { cn } from '@/lib/utils';
+import { UserAvatar } from '@/components/user-avatar';
+import { BotAvatar } from '@/components/bot-avatar';
 
 const ChatbotPage = () => {
-    const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+    const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
     const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -33,7 +37,7 @@ const ChatbotPage = () => {
     const isLoading = form.formState.isSubmitting;
     const onSubmit = async (values: z.infer<typeof formSchema>) =>{
         try{
-            const userMessage: ChatCompletionRequestMessage = {
+            const userMessage: ChatCompletionMessageParam = {
                 role: "user",
                 content: values.prompt
             };
@@ -62,6 +66,11 @@ const ChatbotPage = () => {
                     iconColor="text-violet-500" 
                     bgColor="bg-violet-500/10"
                 />
+                {isLoading && (
+                        <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
+                            <Loader />
+                        </div>
+                        )}
             <div className="p-4 md:px-8">
             <div>
             <Form {...form}>
@@ -102,9 +111,18 @@ const ChatbotPage = () => {
             </div>
             <div className="space-y-4 mt-4">
                 <div className="flex flex-col-reverse gap-y-4">
-                    {messages.map((message)=>(
-                        <div key={message.content}>
-                            {message.content}
+                    {messages.map((message, index)=>(
+                        <div 
+                        key={index}
+                        className={cn(
+                            "p-8 w-full flex items-start gap-x-8 rounded-lg",
+                            message.role === "user" ? "bg-white border border-black/10" : "bg-muted"
+                        )}
+                        >
+                            {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                        <p className="text-sm">
+                            {message.content as React.ReactNode}
+                        </p>
                         </div>
                     ))}
                 </div>
