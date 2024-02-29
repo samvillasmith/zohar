@@ -24,10 +24,14 @@ import { UserAvatar } from '@/components/user-avatar';
 import { BotAvatar } from '@/components/bot-avatar';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+ 
 
 
 const CodePage = () => {
+
+
+      
     const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
     const router = useRouter();
 
@@ -125,20 +129,27 @@ const CodePage = () => {
                         >
                             {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
                             <ReactMarkdown
-                            components={{
-                                pre: ({ node, ...props}) => (
-                                <div className="overflow-auto w-full my-2 bg-black/90 p-2 rounded-lg text-emerald-400">
-                                    <pre {...props} />
-                                </div>
-                                ),
-                                code: ({node, ...props}) => (
-                                    <code className="bg-black/90 rounded-lg p-1 text-emerald-400" {...props} />
-                                )
-                            }}
-                            className="text-sm overflow-hidden leading-7"
-                        >
-                            {message.content || ""}
-                        </ReactMarkdown>
+                                components={{
+                                    // Override the code component
+                                    code({ node, inline, className, children, ...props }) {
+                                    const match = /language-(\w+)/.exec(className || '');
+                                    return !inline && match ? (
+                                        <SyntaxHighlighter style={atomDark} language={match[1]} PreTag="div" {...props}>
+                                        {String(children).replace(/\n$/, '')}
+                                        </SyntaxHighlighter>
+                                    ) : (
+                                        // Apply basic styling for inline code
+                                        <code className={`bg-black/80 text-blue-200 rounded px-1 p-1 ${className}`} {...props}>
+                                        {children}
+                                        </code>
+                                    );
+                                    }
+                                }}
+                                className="text-sm overflow-hidden leading-7"
+                                >
+                                {message.content || ""}
+                                </ReactMarkdown>
+
                         </div>
                     ))}
                 </div>
