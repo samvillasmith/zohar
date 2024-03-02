@@ -131,9 +131,9 @@ const CodePage = () => {
                             <ReactMarkdown
                                 components={{
                                     // Override the code component
-                                    code({ node, inline, className, children, ...props }) {
+                                    code({ node, className, children, ...props }) {
                                     const match = /language-(\w+)/.exec(className || '');
-                                    return !inline && match ? (
+                                    return match ? (
                                         <SyntaxHighlighter style={atomDark} language={match[1]} PreTag="div" {...props}>
                                         {String(children).replace(/\n$/, '')}
                                         </SyntaxHighlighter>
