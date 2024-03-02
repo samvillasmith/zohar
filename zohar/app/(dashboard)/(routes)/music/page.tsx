@@ -2,9 +2,9 @@
 
 import * as z from 'zod';
 import axios from 'axios';
-import { ChatCompletionMessageParam } from "openai/resources/chat";
+import Replicate from 'replicate';
 import { Heading } from '@/components/heading';
-import { MessageSquare } from 'lucide-react';
+import { Music } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { 
@@ -19,12 +19,10 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { Loader } from '@/components/loader';
-import { cn } from '@/lib/utils';
-import { UserAvatar } from '@/components/user-avatar';
-import { BotAvatar } from '@/components/bot-avatar';
 
-const ChatbotPage = () => {
-    const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
+
+const MusicPage = () => {
+    const [music, setMusic] = useState<string>();
     const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -37,16 +35,12 @@ const ChatbotPage = () => {
     const isLoading = form.formState.isSubmitting;
     const onSubmit = async (values: z.infer<typeof formSchema>) =>{
         try{
-            const userMessage: ChatCompletionMessageParam = {
-                role: "user",
-                content: values.prompt
-            };
+            setMusic(undefined);
+
+            const response = await axios.post("/api/music", values);
             
-            const newMessages = [...messages, userMessage];
-            const response = await axios.post("/api/chatbot", { messages: newMessages });
-            const responseData = await response.data;
-            console.log("Received response:", responseData);
-            setMessages((current) => [...current, userMessage, { role: 'assistant', content: responseData.message }]);
+            setMusic(response.data);
+
             form.reset();
         } catch(error: any){
             console.log(error)
@@ -58,11 +52,11 @@ const ChatbotPage = () => {
     return ( 
             <div>
                 <Heading 
-                    title="Conversational Chatbot" 
-                    description="Converse with our most advanced AI to get the best experience." 
-                    icon={MessageSquare} 
-                    iconColor="text-violet-500" 
-                    bgColor="bg-violet-500/10"
+                    title="Music Generation" 
+                    description="Generate music using AI with descriptive texts." 
+                    icon={Music} 
+                    iconColor="text-emerald-500" 
+                    bgColor="bg-emerald-500/10"
                 />
                 {isLoading && (
                         <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
@@ -94,7 +88,7 @@ const ChatbotPage = () => {
                                     <Input
                                         className="border-0 outline-none focus:visibile:ring-0 focus-visible:ring-transparent"
                                         disabled={isLoading}
-                                        placeholder="Type your message here to start the conversation."
+                                        placeholder="Guitar solo in the style of Jimi Hendrix."
                                         {...field}
                                     />
                                 </FormControl>
@@ -106,28 +100,16 @@ const ChatbotPage = () => {
                     </Button>
                 </form>
             </Form>
-            </div>
-            <div className="space-y-4 mt-4">
-                <div className="flex flex-col-reverse gap-y-4">
-                    {messages.map((message, index)=>(
-                        <div 
-                        key={index}
-                        className={cn(
-                            "p-8 w-full flex items-start gap-x-8 rounded-lg",
-                            message.role === "user" ? "bg-white border border-black/10" : "bg-muted"
-                        )}
-                        >
-                            {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                        <p className="text-sm">
-                            {message.content as React.ReactNode}
-                        </p>
-                        </div>
-                    ))}
-                </div>
+                {music && (
+                    console.log(music),
+                    <audio controls className="w-full mt-8">
+                        <source src={music} type="audio/wav"/>
+                    </audio>
+                )}
             </div>
         </div>
     </div>
     );
 }
  
-export default ChatbotPage;
+export default MusicPage;
