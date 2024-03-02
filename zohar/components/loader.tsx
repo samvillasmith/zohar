@@ -11,7 +11,7 @@ export const Loader = () => {
                 />
             </div>
             <p className="text-sm text-muted-foregrdoun">
-                Zohar is thinking...
+                Zohar is thinking... (this could take a while if it's your first time)
             </p>
         </div>
      );
