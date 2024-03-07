@@ -25,13 +25,12 @@ import { BotAvatar } from '@/components/bot-avatar';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { usePremiumModal } from '@/hooks/use-premium-modal';
  
 
 
 const CodePage = () => {
-
-
-      
+    const premiumModal = usePremiumModal();   
     const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
     const router = useRouter();
 
@@ -59,7 +58,9 @@ const CodePage = () => {
             setMessages((current) => [...current, userMessage, { role: 'assistant', content: responseData.message }]);
             form.reset();
         } catch(error: any){
-            console.log(error)
+            if(error?.response?.status === 403){
+                premiumModal.onOpen();
+            }
         } finally {
             router.refresh();
         }

@@ -27,9 +27,11 @@ import {
     SelectValue } from '@/components/ui/select';
 import { Card, CardFooter } from '@/components/ui/card';
 import Image from 'next/image';
+import { usePremiumModal } from '@/hooks/use-premium-modal';
 
 const ImagePage = () => {
     const router = useRouter();
+    const premiumModal = usePremiumModal();
     const [ images, setImages ] = useState<string[]>([]);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -51,7 +53,9 @@ const ImagePage = () => {
             setImages(urls);
             form.reset();
         } catch(error: any){
-            console.log(error)
+            if(error?.response?.status === 403){
+                premiumModal.onOpen();
+            }
         } finally {
             router.refresh();
         }
