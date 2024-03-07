@@ -7,15 +7,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { MAX_FREE_COUNTS } from '@/constants';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button'
+import { usePremiumModal } from '@/hooks/use-premium-modal';
 
 
 interface FreeCounterProps {
     apiLimitCount: number;
+    isPro: boolean;
 };
 
 export const FreeCounter =({
-    apiLimitCount = 0
+    apiLimitCount = 0,
+    isPro = false
 }: FreeCounterProps) => {
+    const premiumModal = usePremiumModal();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -23,6 +27,10 @@ export const FreeCounter =({
     }, []);
 
     if(!mounted){
+        return null;
+    }
+
+    if(isPro){
         return null;
     }
 
@@ -41,8 +49,8 @@ export const FreeCounter =({
                         />
                     </div>
                     <div className="flex justify-center mt-4">
-                    <Button className="w-fulls" variant="premium">
-                        Upgrade to Premium
+                    <Button className="w-fulls" variant="premium" onClick={premiumModal.onOpen}>
+                        Upgrade to Premium 
                         <Zap className="w-4 h-4 ml-2 fill-white" />
                     </Button>
                     </div>

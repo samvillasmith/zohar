@@ -19,9 +19,11 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { Loader } from '@/components/loader';
+import { usePremiumModal } from '@/hooks/use-premium-modal';
 
 
 const VideoPage = () => {
+    const premiumModal = usePremiumModal();
     const [video, setVideo] = useState<string>();
     const router = useRouter();
 
@@ -43,7 +45,9 @@ const VideoPage = () => {
 
             form.reset();
         } catch(error: any){
-            console.log(error)
+            if(error?.response?.status === 403){
+                premiumModal.onOpen();
+            }
         } finally {
             router.refresh();
         }

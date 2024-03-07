@@ -20,10 +20,14 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { Loader } from '@/components/loader';
 import { cn } from '@/lib/utils';
+import { usePremiumModal } from '@/hooks/use-premium-modal';
+
 import { UserAvatar } from '@/components/user-avatar';
 import { BotAvatar } from '@/components/bot-avatar';
 
+
 const ChatbotPage = () => {
+    const premiumModal = usePremiumModal();
     const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
     const router = useRouter();
 
@@ -49,6 +53,9 @@ const ChatbotPage = () => {
             setMessages((current) => [...current, userMessage, { role: 'assistant', content: responseData.message }]);
             form.reset();
         } catch(error: any){
+            if(error?.response?.status === 403){
+                premiumModal.onOpen();
+            }
             console.log(error)
         } finally {
             router.refresh();
