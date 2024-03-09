@@ -5,42 +5,34 @@ const features = [
     {
         title: "Conversational Chatbot",
         description: "Engage our chatbot in conversation for advice or support.",
-        image: "/chatbot.png",
     },
     {
         title: "Image Generation",
         description: "Generate images from text descriptions. Want a picture of a cat in a Corvette? Just ask!",
-        image: "/image.png",
     },
     {
         title: "Video Generation",
         description: "Generate detailed videos of anything you can dream of from simple text descriptions. ",
-        image: "/video.png",
     },
     {
         title: "Music Generation",
         description: "Generate anything from guitar solos to synthwave beats using our AI.",
-        image: "/music.png",
     },
     {
         title: "Code Generation",
         description: "Whether you are a software engineer or just learning how to code, our AI can help you.",
-        image: "/code.png",
     },
     {
         title: "GPT-4",
         description: "Use the latest GPT-4 model consisting of 1.76 trillion parameters for generating content.",
-        image: "/text.png",
     },
     {
         title: "No Contracts",
         description: "Pay one low price monthly with no suprises or complex credit or token systems. Cancel anytime.",
-        image: "/contract.png",
     },
     {
         title: "Chat Support",
         description: "Premium chat support for all customers. We are here to help you with any questions or issues.",
-        image: "/chat.png",
     }
 ];
 
