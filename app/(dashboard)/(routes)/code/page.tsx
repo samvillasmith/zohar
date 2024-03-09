@@ -134,25 +134,27 @@ const CodePage = () => {
                             <ReactMarkdown
                                 components={{
                                     // Override the code component
-                                    code({ node, className, children, ...props }) {
-                                    const match = /language-(\w+)/.exec(className || '');
-                                    return match ? (
-                                        <SyntaxHighlighter style={atomDark} language={match[1]} PreTag="div" {...props}>
-                                            {String(children).replace(/\n$/, '')}
-                                        </SyntaxHighlighter>
-
-
-                                    ) : (
-                                        // Apply basic styling for inline code
-                                        <code className={`bg-black/80 text-blue-200 rounded px-1 p-1 ${className}`} {...props}>
-                                        {children}
-                                        </code>
-                                    );
-                                    }
+                                    code({ node, className, children, ...rest }) {
+                                        const { ref, key, ...otherProps } = rest; // Destructure and exclude 'ref' and any other incompatible props
+                                        const match = /language-(\w+)/.exec(className || '');
+                                        return match ? (
+                                            <SyntaxHighlighter style={atomDark as any} language={match[1]} PreTag="div" {...otherProps}>
+                                                {String(children).replace(/\n$/, '')}
+                                            </SyntaxHighlighter>
+                                        ) : (
+                                            <code className={`bg-black/80 text-blue-200 rounded px-1 p-1 ${className}`} {...rest}>
+                                                {children}
+                                            </code>
+                                        );
+                                    }                                    
                                 }}
                                 className="text-sm overflow-hidden leading-7"
                                 >
-                                {message.content || ""}
+                                    {message.content 
+                                        ? (Array.isArray(message.content) 
+                                            ? message.content.join(' ') 
+                                            : message.content)
+                                        : ""}
                                 </ReactMarkdown>
 
                         </div>
