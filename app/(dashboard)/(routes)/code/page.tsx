@@ -24,7 +24,7 @@ import { UserAvatar } from '@/components/user-avatar';
 import { BotAvatar } from '@/components/bot-avatar';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism/atom-dark';
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { usePremiumModal } from '@/hooks/use-premium-modal';
 import { toast } from 'react-hot-toast';
 
