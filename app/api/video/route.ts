@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs";
 import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
 import { checkSubscription } from '@/lib/subscription';
 
-export const maxDuration = 60; 
+export const maxDuration = 300; 
 export const dynamic = 'force-dynamic';
 
 export function GET(request: Request) {
