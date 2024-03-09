@@ -24,7 +24,7 @@ import { UserAvatar } from '@/components/user-avatar';
 import { BotAvatar } from '@/components/bot-avatar';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism/atom-dark';
 import { usePremiumModal } from '@/hooks/use-premium-modal';
 import { toast } from 'react-hot-toast';
 
@@ -137,7 +137,7 @@ const CodePage = () => {
                                     code({ node, className, children, ...props }) {
                                     const match = /language-(\w+)/.exec(className || '');
                                     return match ? (
-                                        <SyntaxHighlighter style={atomDark as unknown as { [key: string]: CSSProperties; }} language={match[1]} PreTag="div" {...props}>
+                                        <SyntaxHighlighter style={atomDark} language={match[1]} PreTag="div" {...props}>
                                             {String(children).replace(/\n$/, '')}
                                         </SyntaxHighlighter>
 
