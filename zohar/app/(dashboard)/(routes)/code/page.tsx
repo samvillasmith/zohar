@@ -26,7 +26,7 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { usePremiumModal } from '@/hooks/use-premium-modal';
- 
+import { toast } from 'react-hot-toast';
 
 
 const CodePage = () => {
@@ -60,6 +60,8 @@ const CodePage = () => {
         } catch(error: any){
             if(error?.response?.status === 403){
                 premiumModal.onOpen();
+            } else {
+                toast.error("An error occurred. Please try again.");
             }
         } finally {
             router.refresh();
