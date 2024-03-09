@@ -4,6 +4,13 @@ import { auth } from "@clerk/nextjs";
 import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
 import { checkSubscription } from '@/lib/subscription';
 
+export const maxDuration = 60; 
+export const dynamic = 'force-dynamic';
+
+export function GET(request: Request) {
+  return new Response('{}', { status: 200 });
+}
+
 
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN!
