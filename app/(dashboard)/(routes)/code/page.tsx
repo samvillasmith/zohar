@@ -137,9 +137,11 @@ const CodePage = () => {
                                     code({ node, className, children, ...props }) {
                                     const match = /language-(\w+)/.exec(className || '');
                                     return match ? (
-                                        <SyntaxHighlighter style={atomDark} language={match[1]} PreTag="div" {...props}>
-                                        {String(children).replace(/\n$/, '')}
+                                        <SyntaxHighlighter style={atomDark as unknown as { [key: string]: CSSProperties; }} language={match[1]} PreTag="div" {...props}>
+                                            {String(children).replace(/\n$/, '')}
                                         </SyntaxHighlighter>
+
+
                                     ) : (
                                         // Apply basic styling for inline code
                                         <code className={`bg-black/80 text-blue-200 rounded px-1 p-1 ${className}`} {...props}>
