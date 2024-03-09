@@ -21,7 +21,7 @@ import React, { useState } from 'react';
 import { Loader } from '@/components/loader';
 import { cn } from '@/lib/utils';
 import { usePremiumModal } from '@/hooks/use-premium-modal';
-
+import { toast } from 'react-hot-toast';
 import { UserAvatar } from '@/components/user-avatar';
 import { BotAvatar } from '@/components/bot-avatar';
 
@@ -55,6 +55,8 @@ const ChatbotPage = () => {
         } catch(error: any){
             if(error?.response?.status === 403){
                 premiumModal.onOpen();
+            } else {
+                toast.error("An error occurred. Please try again.");
             }
             console.log(error)
         } finally {
