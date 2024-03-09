@@ -8,29 +8,29 @@ const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN!
 });
 
+interface ReplicateResponse {
+    audio: string; // The audio response from the API
+}
 
-export async function POST(
-    
-    req: Request
-) {
+export async function POST(req: Request) {
     try {
         const { userId } = auth();
         const body = await req.json();
         const { prompt } = body;
 
-        if(!userId){
+        if (!userId) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if(!prompt){
-            return new NextResponse("Prompt is required", { status: 400})
+        if (!prompt) {
+            return new NextResponse("Prompt is required", { status: 400 });
         }
 
         const freeTrial = await checkApiLimit();
         const isPro = await checkSubscription();
 
-        if(!freeTrial && !isPro){
-            return new NextResponse("You have exceeded the free trial limit", { status: 403})
+        if (!freeTrial && !isPro) {
+            return new NextResponse("You have exceeded the free trial limit", { status: 403 });
         }
 
         const response = await replicate.run(
@@ -43,17 +43,16 @@ export async function POST(
                 num_inference_steps: 50
               }
             }
-          );
+        ) as ReplicateResponse; // Cast the response to the ReplicateResponse type
 
-
-        if(!isPro){
+        if (!isPro) {
             await increaseApiLimit();
         }
-         
+
         return NextResponse.json(response.audio);
-   
-      } catch (error){
+
+    } catch (error) {
         console.log("[MUSIC_ERROR]", error);
-        return new NextResponse("Internal error", { status: 500})
-      }
+        return new NextResponse("Internal error", { status: 500 });
     }
+}

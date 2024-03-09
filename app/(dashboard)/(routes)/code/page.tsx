@@ -24,7 +24,7 @@ import { UserAvatar } from '@/components/user-avatar';
 import { BotAvatar } from '@/components/bot-avatar';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { usePremiumModal } from '@/hooks/use-premium-modal';
 import { toast } from 'react-hot-toast';
 
@@ -134,25 +134,27 @@ const CodePage = () => {
                             <ReactMarkdown
                                 components={{
                                     // Override the code component
-                                    code({ node, className, children, ...props }) {
-                                    const match = /language-(\w+)/.exec(className || '');
-                                    return match ? (
-                                        <SyntaxHighlighter style={atomDark as unknown as { [key: string]: CSSProperties; }} language={match[1]} PreTag="div" {...props}>
-                                            {String(children).replace(/\n$/, '')}
-                                        </SyntaxHighlighter>
-
-
-                                    ) : (
-                                        // Apply basic styling for inline code
-                                        <code className={`bg-black/80 text-blue-200 rounded px-1 p-1 ${className}`} {...props}>
-                                        {children}
-                                        </code>
-                                    );
-                                    }
+                                    code({ node, className, children, ...rest }) {
+                                        const { ref, key, ...otherProps } = rest; // Destructure and exclude 'ref' and any other incompatible props
+                                        const match = /language-(\w+)/.exec(className || '');
+                                        return match ? (
+                                            <SyntaxHighlighter style={atomDark as any} language={match[1]} PreTag="div" {...otherProps}>
+                                                {String(children).replace(/\n$/, '')}
+                                            </SyntaxHighlighter>
+                                        ) : (
+                                            <code className={`bg-black/80 text-blue-200 rounded px-1 p-1 ${className}`} {...rest}>
+                                                {children}
+                                            </code>
+                                        );
+                                    }                                    
                                 }}
                                 className="text-sm overflow-hidden leading-7"
                                 >
-                                {message.content || ""}
+                                    {message.content 
+                                        ? (Array.isArray(message.content) 
+                                            ? message.content.join(' ') 
+                                            : message.content)
+                                        : ""}
                                 </ReactMarkdown>
 
                         </div>
